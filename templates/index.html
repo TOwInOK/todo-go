@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Todo list</title>
+        <script>
+            async function deleteTask(id) {
+                const response = await fetch(`/tasks/${id}`, {
+                    method: "DELETE",
+                });
+                if (response.ok) {
+                    alert(`Task ${id} deleted successfully`);
+                    location.reload();
+                } else {
+                    const errorData = await response.json();
+                    alert(`Failed to delete task ${id}: ${errorData.error}`);
+                }
+            }
+
+            async function createTask(event) {
+                event.preventDefault();
+                const titleInput = document.getElementById("task-title");
+                const title = titleInput.value;
+
+                if (!title.trim()) {
+                    alert("Title cannot be empty");
+                    return;
+                }
+
+                const response = await fetch(`/tasks`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ title: title }),
+                });
+
+                if (response.ok) {
+                    alert("Task created successfully");
+                    location.reload();
+                } else {
+                    const errorData = await response.json();
+                    alert(`Failed to create task: ${errorData.error}`);
+                }
+            }
+        </script>
+        <style>
+            * {
+                background-color: black;
+                color: whitesmoke;
+                font-family: monospace;
+            }
+        </style>
+    </head>
+    <body style="display: grid; gap: 4; padding: 10px">
+        <h1>Todo List</h1>
+        <div>
+            <form onsubmit="createTask(event)">
+                <label for="task-title">New Task:</label>
+                <input
+                    type="text"
+                    id="task-title"
+                    name="title"
+                    placeholder="Enter task title"
+                />
+                <button type="submit">Add Task</button>
+            </form>
+        </div>
+        <div style="display: flex; flex-direction: column; margin-top: 20px">
+            {{range .tasks}}
+            <div
+                style="
+                    display: flex;
+                    border: 1px solid whitesmoke;
+                    padding: 10px;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-content: center;
+                "
+            >
+                <p style="">ID: {{.Id}}</p>
+                <p style="">Created At: {{.FormattedTime}}</p>
+                <p style="">Title: {{.Title}}</p>
+                <button
+                    style="
+                        display: flex;
+                        padding: 18px;
+                        background-color: red;
+                        font-style: red;
+                        align-items: center;
+                        font-family: monospace;
+                    "
+                    onclick="deleteTask({{.Id}})"
+                >
+                    Delete
+                </button>
+            </div>
+            {{end}}
+        </div>
+    </body>
+</html>
