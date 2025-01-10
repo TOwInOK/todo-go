@@ -1,3 +1,4 @@
 tasks.db
 go.sum
 todo-go
+.DS_Store
