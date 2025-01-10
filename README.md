@@ -40,11 +40,11 @@ because try to use go...
 # how to run?
 ```sh
 cd todo-go
-go run main.go
+go mod tidy && go run main.go
 ```
 # how to build and run?
 ```sh
 cd todo-go
-go build
+go mod tidy && go build
 ./todo-go
 ```
